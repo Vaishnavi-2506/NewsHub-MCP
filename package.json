@@ -9,7 +9,9 @@
   },
   "scripts": {
     "start": "node server/index.js",
+    "start:http": "node server/http.js",
     "dev": "nodemon server/index.js",
+    "dev:http": "nodemon server/http.js",
     "setup": "node scripts/setup.js"
   },
   "keywords": [
@@ -29,6 +31,7 @@
     "cheerio": "^1.2.0",
     "compromise": "^14.15.0",
     "dotenv": "^17.3.1",
+    "express": "^5.2.1",
     "sentiment": "^5.0.2"
   },
   "devDependencies": {
