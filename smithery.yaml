@@ -34,7 +34,7 @@ startCommand:
   commandFunction: |-
     (config) => ({
       command: "node",
-      args: ["server/index.js"],
+      args: ["server/http.js"],
       env: {
         RAPIDAPI_KEY: config.rapidApiKey,
         PREFERRED_TOPICS: config.preferredTopics || "",
