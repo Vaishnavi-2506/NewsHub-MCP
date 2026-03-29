@@ -30,11 +30,18 @@ import { join } from "path";
 const PREFS_DIR = join(homedir(), ".news-hub-mcp");
 const PREFS_FILE = join(PREFS_DIR, "preferences.json");
 
-/** Fallback used when no preferences file exists yet */
+/**
+ * Fallback preferences — checked in this order:
+ *   1. ~/.news-hub-mcp/preferences.json  (set via npm run setup or set_my_preferences)
+ *   2. Environment variables              (injected by Smithery at install time)
+ *   3. Hard-coded defaults below
+ */
 const DEFAULT_PREFERENCES = {
-  topics: [],       // Empty means "use whatever topic is requested"
-  country: "US",    // Default region for news relevance
-  language: "en"    // Default language
+  topics: process.env.PREFERRED_TOPICS
+    ? process.env.PREFERRED_TOPICS.split(",").map(t => t.trim()).filter(Boolean)
+    : [],
+  country: process.env.PREFERRED_COUNTRY || "US",
+  language: process.env.PREFERRED_LANGUAGE || "en"
 };
 
 /**

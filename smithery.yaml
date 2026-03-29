@@ -1,0 +1,44 @@
+# Smithery manifest — https://smithery.ai
+# This file tells Smithery how to configure and launch the News Hub MCP server.
+# Users who install via Smithery will be prompted for their RAPIDAPI_KEY
+# through a UI form — no manual .env editing required.
+
+startCommand:
+  type: stdio
+
+  # configSchema defines the fields shown in Smithery's installation UI.
+  # Each field here becomes a form input the user fills in before installing.
+  configSchema:
+    type: object
+    required:
+      - rapidApiKey
+    properties:
+      rapidApiKey:
+        type: string
+        description: "Your RapidAPI key for the Real-Time News Data API. Get a free key at rapidapi.com (search: Real-Time News Data)."
+      preferredTopics:
+        type: string
+        description: "Comma-separated list of topics you want news about, e.g. technology,science,sports (optional)"
+        default: ""
+      country:
+        type: string
+        description: "2-letter country code for news region, e.g. US, GB, IN (optional)"
+        default: "US"
+      language:
+        type: string
+        description: "2-letter language code, e.g. en, fr, de (optional)"
+        default: "en"
+
+  # commandFunction receives the filled-in config and returns the start command.
+  # This is what Smithery runs to launch the server for the user.
+  commandFunction: |-
+    (config) => ({
+      command: "node",
+      args: ["server/index.js"],
+      env: {
+        RAPIDAPI_KEY: config.rapidApiKey,
+        PREFERRED_TOPICS: config.preferredTopics || "",
+        PREFERRED_COUNTRY: config.country || "US",
+        PREFERRED_LANGUAGE: config.language || "en"
+      }
+    })
