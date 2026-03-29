@@ -1,0 +1,8 @@
+node_modules/
+
+# Environment — contains your private API key
+.env
+
+# Local VS Code MCP config — gets your key injected by npm run setup
+# Each user has their own; don't commit yours
+.vscode/mcp.json
