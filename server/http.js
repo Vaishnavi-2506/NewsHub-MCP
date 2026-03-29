@@ -99,6 +99,15 @@ function createMCPServer() {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS — required for Smithery and browser-based MCP clients
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") { res.sendStatus(200); return; }
+  next();
+});
+
 // Track active SSE transports so POST /messages can route to the right session
 const activeTransports = {};
 
@@ -137,6 +146,25 @@ app.post("/messages", express.json(), async (req, res) => {
   }
 
   await transport.handlePostMessage(req, res);
+});
+
+/**
+ * GET /.well-known/mcp/server-card.json
+ * Required by Smithery to discover server metadata without scanning.
+ * See: https://smithery.ai/docs/build/publish#troubleshooting
+ */
+app.get("/.well-known/mcp/server-card.json", (_, res) => {
+  res.json({
+    name: "news-hub-mcp",
+    version: "2.0.0",
+    description: "Real-time news aggregation, search, NLP analysis, and personalized preferences via MCP.",
+    connections: [
+      {
+        type: "sse",
+        url: "/sse"
+      }
+    ]
+  });
 });
 
 /**
